@@ -1,47 +1,81 @@
-/*
-   execute . cria um processo prog�nito e executa um programa
-*/
 #include "shell.h"
 
 int ultimo ( int *numargs, char **args )
 {
- if ( args[*numargs-1][0]=='&') {
- *numargs=*numargs-1;
- args[*numargs]=NULL ;
- return BG;
- }
- return FG; /*return FG ou BG Definidos no shell.h */
+  if ( args[*numargs-1][0]=='&') {
+    *numargs=*numargs-1;
+    args[*numargs]=NULL ;
+    return BG;
+  }
+  return FG;
 }
 
-
+int containsPipe (int numArgs, char **args) {
+  for (int i = 0; i < numArgs; i++) {
+    if (args[i][0] == '|')
+      return i;
+  }
+  return -1;
+}
 
 void execute (int numargs, char **args)
 {
   int code = ultimo(&numargs, args);
   int pid, status;
 
-  if ((pid = fork ()) < 0)
-    { /* cria um processo progenito */
-      perror ("forks");/* NOTE: perror() produz uma pequema mensagem de erro para o stream */
-      exit (1);/* estandardizado de erros que descreve o ultimo erro encontrado */
-               /* durante uma chamada ao sistema ou funcao duma biblioteca */
-    }
+  int pipeIndex = containsPipe(numargs, args);
 
-  if (pid == 0)
-    {
-      numargs = redirects(numargs, args); // <-- redirecionamento ANTES de exec
+  if ((pid = fork ()) < 0) {
+    perror ("fork");
+    exit (1);
+  }
+
+  if (pid == 0) { // processo filho do shell
+
+    if (pipeIndex == -1) {
+      numargs = redirects(numargs, args);
       execvp(*args, args);
       perror(*args);
       exit(1);
-    }                    /* vector de strings que contem os
-                            * argumentos. O ultimo argument */
-  if (FG == code){
-    while (wait (&status) != pid)
-    /*spin fazer nada */ ;
-  } else
-  {
-      // modo background → não espera
+    }
+
+    // PIPE DETECTADO
+
+    int fd[2];
+    pipe(fd);
+
+    args[pipeIndex] = NULL; // cortar o símbolo do pipe
+
+    pid_t pid_neto = fork();
+
+    if (pid_neto == 0) {
+      // Processo NETO: comando antes do pipe
+      close(fd[0]); 
+      dup2(fd[1], STDOUT_FILENO);
+      close(fd[1]);
+      numargs = redirects(pipeIndex, args);
+      execvp(args[0], args);
+      perror("execvp neto");
+      exit(1);
+    } else {
+      // Processo FILHO: comando depois do pipe
+      close(fd[1]); 
+      dup2(fd[0], STDIN_FILENO);
+      close(fd[0]);
+      char **args2 = &args[pipeIndex + 1];
+      int numargs2 = numargs - pipeIndex - 1;
+      numargs2 = redirects(numargs2, args2); 
+      execvp(args2[0], args2);
+      perror("execvp filho");
+      exit(1);
+    }
+
+  } else {
+    if (code == FG) {
+      while (wait (&status) != pid);
+    } else {
       printf("[BG] Processo iniciado com PID: %d\n", pid);
+    }
   }
 
   return;
