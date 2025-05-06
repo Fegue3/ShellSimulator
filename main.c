@@ -38,12 +38,14 @@ int builtin (char **args)
     exit (0);
     return 1; /* funcionalidade embutida */
   }
+  
   if (strncmp (args[0], "42", 2) == 0)
   {
     printf("42 is the answer to life the universe and everything\n");
     printf("https://pt.wikipedia.org/wiki/The_Hitchhiker's_Guide_to_the_Galaxy\n");
     return 1;/* funcionalidade embutida */
   }
+
   if( 0==strcmp(args[0], "obterinfo") ){
     printf("SO Shell 2025 versaõ 1.0\n");
     return 1 ; //comando embutido
@@ -56,9 +58,9 @@ int builtin (char **args)
    if( 0==strcmp(args[0], "quemsoueu") ){
     system("id");
     return 1 ; //comando embutido
-   }
+  }
 
-   if (0 == strcmp(args[0], "cd")) {
+  if (0 == strcmp(args[0], "cd")) {
     int err;
     
     // Verifica se o argumento é nulo, "~" ou "$HOME"
@@ -72,14 +74,17 @@ int builtin (char **args)
     
     return 1;  // comando tratado internamente
   }
+
   if( 0==strcmp(args[0], "socp") ){
-    if (args[1]!=NULL && args[2] !=NULL)
-    socp( args[1], args[2] );
-    else
+    if (args[1]!=NULL && args[2] !=NULL){
+      int blksize = args[3] ? atoi(args[3]) : 1024;
+      socp( args[1], args[2], blksize);
+    }else
     printf("Syntax Incorreto: Usage: socp fonte destino");
     return 1; //comando embutido
    }
-   if (strcmp(args[0], "calc") == 0) {
+
+  if (strcmp(args[0], "calc") == 0) {
     if (args[1] != NULL && args[2] != NULL && args[3] != NULL && args[4] == NULL) {
         calc(args[1], args[2], args[3]);
     } else {
@@ -87,6 +92,7 @@ int builtin (char **args)
     }
     return 1;
   }
+
   if(strcmp(args[0], "bits") == 0){
     if (args[1] && args[2] && (args[3] || args[2][0] == '~') && args[4] == NULL) {
       bits(args[1], args[2], args[3]);  // args[3] pode ser NULL no caso do ~
@@ -95,6 +101,7 @@ int builtin (char **args)
   }
   return 1;
   }
+
   if (strcmp(args[0], "isjpeg") == 0) {
     if (args[1] != NULL) {
         int fd = open(args[1], O_RDONLY);
@@ -113,6 +120,7 @@ int builtin (char **args)
     }
     return 1;
   }
+
   if (strcmp (args[0], "isValid") == 0) {
     if (NULL!=args[1]) {
     int fd=atoi(args[1]);
@@ -121,25 +129,29 @@ int builtin (char **args)
     return 1;
   }
 
-   if (strcmp (args[0], "read") == 0) {
+  if (strcmp (args[0], "read") == 0) {
     if (NULL!=args[2] )
     readfile(args[1], args[2]);
     return 1;
    }
+
    if (strcmp (args[0], "fileinfo") == 0) {
     fileinfo();
     return 1;
    }
+
    if (strcmp (args[0], "closefd") == 0) {
     if (NULL!=args[1])
     closefd( atoi(args[1]) );
     return 1;
    }
+
    if (strcmp (args[0], "openfile") == 0) {
     if (NULL!=args[1] )
     openfile(args[1]);
     return 1;
    }
+
    if (strcmp(args[0], "displayBitOps") == 0) {
     if (args[1] && args[2]) {
         unsigned short um = (unsigned short)atoi(args[1]);
@@ -150,6 +162,49 @@ int builtin (char **args)
     }
     return 1;
   }
+
+  if (strcmp(args[0], "avisoTeste") == 0) {
+    if (args[1] && args[2])
+        aviso(args[1], atoi(args[2]));
+    else
+        fprintf(stderr, "Erro: argumentos insuficientes.\n");
+    return 1;
+  }
+
+  if (strcmp(args[0], "avisoMAU") == 0) {
+    pthread_t th;
+    pthread_create(&th, NULL, avisowrapperMAU, (void *)args);
+    pthread_detach(th);
+    return 1;
+  }
+  if ( 0 == strcmp (args[0], "aviso") ){
+    pthread_t th;
+    aviso_t * ptr = (aviso_t *)malloc( sizeof(aviso_t) );
+    strcpy(ptr->msg, args[1]);
+    ptr->tempo=atoi(args[2]);
+    pthread_create(&th, NULL, avisowrapper, (void *)ptr);
+    return 1;
+   }
+
+   if (strcmp(args[0], "socpthread") == 0) {
+    if (args[1] && args[2]) {
+        pthread_t th;
+        copiar_t *ptr = malloc(sizeof(copiar_t));
+        strcpy(ptr->fonte, args[1]);
+        strcpy(ptr->destino, args[2]);
+        ptr->buffsize = args[3] ? atoi(args[3]) : 1024;
+        pthread_create(&th, NULL, socpwrapper, (void *)ptr);
+        pthread_detach(th);
+    } else {
+        fprintf(stderr, "Erro: argumentos insuficientes.\n");
+    }
+    return 1;
+  }
+  if (strcmp(args[0], "InfoCopias") == 0) {
+    mostrarRelatorio();
+    return 1;
+  }
+   
   /* IMPORTANTE : 
    Devolver 0 para indicar que não existe comando embutido e que
    será executado usando exec() na função execute.c
