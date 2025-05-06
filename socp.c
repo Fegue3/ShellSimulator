@@ -3,15 +3,15 @@
 #include <stdio.h>
 #include "shell.h"
 
-void ioCopy(int IN, int OUT) {
-    char buffer[1024];
+void ioCopy(int IN, int OUT, int blksize) {
+    char buffer[blksize];  // usar bloco com tamanho definido
     ssize_t bytes;
-    while ((bytes = read(IN, buffer, sizeof(buffer))) > 0) {
+    while ((bytes = read(IN, buffer, blksize)) > 0) {
         write(OUT, buffer, bytes);
     }
 }
 
-void socp(char *fonte, char *destino) {
+void socp(char *fonte, char *destino, int blksize) {
     int fdin = open(fonte, O_RDONLY);
     if (fdin < 0) {
         perror("Erro ao abrir ficheiro fonte");
@@ -25,7 +25,7 @@ void socp(char *fonte, char *destino) {
         return;
     }
 
-    ioCopy(fdin, fdout);
+    ioCopy(fdin, fdout, blksize);
 
     close(fdin);
     close(fdout);
