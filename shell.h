@@ -9,15 +9,26 @@
 #include <ctype.h>
 #include <sys/wait.h>
 
+typedef struct {
+    char msg[100];
+    int tempo;
+} aviso_t;
+
+typedef struct {
+    char fonte[100];
+    char destino[100];
+    int buffsize;
+} copiar_t;
+
 int parse(char *buf, char **args);
 
 void execute (int numargs, char **args);
 
 int builtin (char **args);
 
-void socp(char *fonte, char *destino);
+void socp(char *fonte, char *destino, int blksize);
 
-void ioCopy(int IN,int OUT);
+void ioCopy(int IN, int OUT, int blksize);
 
 int ultimo ( int *numargs, char **args );
 
@@ -40,6 +51,16 @@ void fileinfo();
 void displayBitOps(unsigned short um, unsigned short dois);
 
 int redirects(int numargs, char *args[]);
+
+void aviso(char *mesg, int tempo);
+
+void *avisowrapper(void *args);
+
+void *avisowrapperMAU(void *args);
+
+void *socpwrapper(void *args);
+
+void mostrarRelatorio();
 
 /* constantes que podem tornar uteis*/
 
