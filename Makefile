@@ -10,7 +10,7 @@
 CC=cc
 FLAGS=-c -Wall
 LIBS=-lm
-OBS=main.o execute.o parse.o socp.o calc.o files.o display.o redirects.o threads.o
+OBS=main.o execute.o parse.o socp.o calc.o files.o display.o redirects.o threads.o fileutils.o
 
 #Alvo por defeito é o primeiro
 all :  soshell
@@ -39,6 +39,9 @@ socp.o : shell.h socp.c
 
 threads.o : shell.h threads.c
 	$(CC) $(FLAGS) threads.c
+
+fileutils.o : shell.h fileutils.c
+	$(CC) $(FLAGS) fileutils.c
 
 soshell : $(OBS)
 	$(CC)  -o soshell  $(OBS) $(LIBS)
