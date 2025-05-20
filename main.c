@@ -204,7 +204,23 @@ int builtin (char **args)
     mostrarRelatorio();
     return 1;
   }
-   
+  if (strcmp(args[0], "maior") == 0 && args[1] && args[2]) {
+    cmd_maior(args[1], args[2]);
+    return 1;
+}
+  if (strcmp(args[0], "setx") == 0 && args[1]) {
+      cmd_setx(args[1]);
+      return 1;
+  }
+  if (strcmp(args[0], "removerl") == 0 && args[1]) {
+      cmd_removerl(args[1]);
+      return 1;
+  }
+  if (strcmp(args[0], "sols") == 0) {
+      cmd_sols(args[1]); // args[1] pode ser NULL
+      return 1;
+  }
+    
   /* IMPORTANTE : 
    Devolver 0 para indicar que não existe comando embutido e que
    será executado usando exec() na função execute.c
