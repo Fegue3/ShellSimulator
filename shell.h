@@ -62,6 +62,15 @@ void *socpwrapper(void *args);
 
 void mostrarRelatorio();
 
+void cmd_maior(char *file1, char *file2);
+
+void cmd_setx(char *file);
+
+void cmd_removerl(char *file);
+
+void cmd_sols(char *dir);
+
+
 /* constantes que podem tornar uteis*/
 
 #define BG 0
