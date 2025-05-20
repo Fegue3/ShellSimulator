@@ -29,7 +29,7 @@ void *avisowrapper(void *args) {
 
 void *socpwrapper(void *args) {
     copiar_t *ptr = (copiar_t *)args;
-    socp(ptr->fonte, ptr->destino, ptr->buffsize);  // usa tua função socp()
+    socp(ptr->fonte, ptr->destino, ptr->buffsize); 
     
     // Registar no vetor de logs
     time_t t;
