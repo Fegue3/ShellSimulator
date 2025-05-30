@@ -64,7 +64,6 @@ void cmd_removerl(char *file) {
     }
 }
 
-// Função 4: sols [diretorio]
 void cmd_sols(char *dir) {
     DIR *d;
     struct dirent *entry;
@@ -80,14 +79,22 @@ void cmd_sols(char *dir) {
         return;
     }
 
-    printf("Nome: %-19s Inode:     Tamanho:    bytes Última modificação:\n", "");
+    printf("%-25s %-10s %-11s %s\n", "Nome", "Inode", "Tamanho", "Última modificação");
+
     while ((entry = readdir(d)) != NULL) {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            continue;
+
         snprintf(path, sizeof(path), "%s/%s", dir, entry->d_name);
         if (stat(path, &st) == 0) {
-            printf("%-25s %-10lu %-11ld %s",
-                   entry->d_name, st.st_ino, st.st_size, ctime(&st.st_mtime));
+            char *tempo = ctime(&st.st_mtime);
+            tempo[strcspn(tempo, "\n")] = '\0';  // remover newline
+
+            printf("%-25s %-10lu %-11ld %s\n",
+                   entry->d_name, st.st_ino, st.st_size, tempo);
         }
     }
 
     closedir(d);
 }
+
