@@ -196,7 +196,7 @@ int builtin (char **args)
     return 1;
   }
 
-  if (strcmp(args[0], "avisoMAU") == 0) {
+  if (strcmp(args[0], "avisomau") == 0) {
     pthread_t th;
     pthread_create(&th, NULL, avisowrapperMAU, (void *)args);
     pthread_detach(th);
