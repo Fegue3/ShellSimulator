@@ -60,19 +60,44 @@ int builtin (char **args)
     return 1 ; //comando embutido
   }
 
+
   if (0 == strcmp(args[0], "cd")) {
-    int err;
+    int err = 0;
+    char curr_dir[1024];
     
-    // Verifica se o argumento é nulo, "~" ou "$HOME"
+    if (getcwd(curr_dir, sizeof(curr_dir)) == NULL) {
+        perror("getcwd");
+        return 1;
+    }
+    
     if (args[1] == NULL || strcmp(args[1], "~") == 0 || strcmp(args[1], "$HOME") == 0)
         err = chdir(getenv("HOME"));  // Vai para a pasta HOME do utilizador
-    else
+
+    //Opcional cd -
+    else if (strcmp(args[1], "-") == 0) {
+        char *oldpwd = getenv("OLDPWD");
+        if (oldpwd == NULL) {
+            fprintf(stderr, "cd: diretório anterior não disponível\n");
+            return 1;
+        }
+        err = chdir(oldpwd);
+        if (err == 0) printf("%s\n", oldpwd);  // Mostra novo diretório
+    }else
         err = chdir(args[1]);  // Vai para o diretório indicado
     
-    if (err < 0)
-        perror(args[1]);  // Imprime erro caso a mudança falhe
+    if (err < 0){
+      perror(args[1]);  
+    }else{
+        // Atualiza as variáveis de ambiente OLDPWD e PWD
+        setenv("OLDPWD", curr_dir, 1);
+
+        char new_dir[1024];
+        if (getcwd(new_dir, sizeof(new_dir)) != NULL) {
+            setenv("PWD", new_dir, 1);
+        }
+    }
     
-    return 1;  // comando tratado internamente
+    return 1; 
   }
 
   if( 0==strcmp(args[0], "socp") ){
