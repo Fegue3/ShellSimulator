@@ -55,24 +55,40 @@ void bits(char *op1, char *op, char *op2) {
     unsigned short num2 = op2 ? (unsigned short)atoi(op2) : 0;
     unsigned short resultado;
 
-    switch (op[0]) {
-        case '&':
-            resultado = num1 & num2;
-            printf("Resultado bits %hu & %hu = %hu\n", num1, num2, resultado);
-            break;
-        case '|':
-            resultado = num1 | num2;
-            printf("Resultado bits %hu | %hu = %hu\n", num1, num2, resultado);
-            break;
-        case '^':
-            resultado = num1 ^ num2;
-            printf("Resultado bits %hu ^ %hu = %hu\n", num1, num2, resultado);
-            break;
-        case '~':
-            // operador ~ é unário, só aplica a num1
-            printf("Resultado bits ~%hu = %hu\n", num1, (unsigned short)(~num1));
-            break;
-        default:
-            printf("Operador inválido: %s\n", op);
+    // Operadores de 1 caractere → usar switch
+    if (strlen(op) == 1) {
+        switch (op[0]) {
+            case '&':
+                resultado = num1 & num2;
+                printf("Resultado bits %hu & %hu = %hu\n", num1, num2, resultado);
+                break;
+            case '|':
+                resultado = num1 | num2;
+                printf("Resultado bits %hu | %hu = %hu\n", num1, num2, resultado);
+                break;
+            case '^':
+                resultado = num1 ^ num2;
+                printf("Resultado bits %hu ^ %hu = %hu\n", num1, num2, resultado);
+                break;
+            case '~':
+                // operador unário
+                printf("Resultado bits ~%hu = %hu\n", num1, (unsigned short)(~num1));
+                break;
+            default:
+                printf("Operador inválido: %s\n", op);
+                break;
+        }
+    }
+    // Operadores compostos → usar strcmp
+    else if (strcmp(op, "<<") == 0) {
+        resultado = num1 << num2;
+        printf("Resultado bits %hu << %hu = %hu\n", num1, num2, resultado);
+    }
+    else if (strcmp(op, ">>") == 0) {
+        resultado = num1 >> num2;
+        printf("Resultado bits %hu >> %hu = %hu\n", num1, num2, resultado);
+    }
+    else {
+        printf("Operador inválido: %s\n", op);
     }
 }
