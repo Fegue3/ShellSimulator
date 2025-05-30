@@ -148,15 +148,15 @@ int builtin (char **args)
 
   if (strcmp (args[0], "isValid") == 0) {
     if (NULL!=args[1]) {
-    int fd=atoi(args[1]);
-    printf("%s é %s válido\n", args[1], fd_is_valid(fd) ? "" : "não");
+      int fd=atoi(args[1]);
+      printf("%s é %s válido\n", args[1], fd_is_valid(fd) ? "" : "não");
     }
     return 1;
   }
 
   if (strcmp (args[0], "read") == 0) {
     if (NULL!=args[2] )
-    readfile(args[1], args[2]);
+      readfile(args[1], args[2]);
     return 1;
    }
 
@@ -167,7 +167,7 @@ int builtin (char **args)
 
    if (strcmp (args[0], "closefd") == 0) {
     if (NULL!=args[1])
-    closefd( atoi(args[1]) );
+      closefd( atoi(args[1]) );
     return 1;
    }
 
