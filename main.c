@@ -1,33 +1,47 @@
 #include "shell.h"
+#include <readline/readline.h>
+#include <readline/history.h>
 
 char prompt[100];
 
-int main ()
+int main()
 {
-  int len;
-  char linha[1024];/* um comando */
-  char *args[64];/* com um maximo de 64 argumentos */
-  
-  strcpy (prompt, "SOSHELL: Introduza um comando : prompt>");
-  while (1)
-  {
-    printf ("%s", prompt);
-    if (fgets (linha, 1023, stdin) == NULL)
-    {
-      printf ("\n");
-      exit (0);
-    }
-    len = strlen (linha);
-    if (1 == len)
-      continue;/* linha é apenas \n */
-    if (linha[len - 1] == '\n')
-      linha[len - 1] = '\0';
-    int numargs = parse (linha, args);/* particiona a string em argumentos */
+    char *linha;
+    char *args[64]; // máximo de 64 argumentos
 
-    if (!builtin (args))
-      execute(numargs, args);/* executa o comando */
+    strcpy(prompt, "SOSHELL: Introduza um comando : prompt> ");
+
+    read_history(".soshell_history");
+
+    while (1)
+    {
+        // Usa readline com o prompt
+        linha = readline(prompt);
+        if (linha == NULL)
+        {
+            printf("\n");
+            break;
+        }
+
+        if (*linha == '\0')
+        {
+            free(linha);
+            continue; 
+        }
+
+        add_history(linha); 
+
+        int numargs = parse(linha, args); 
+        if (!builtin(args))
+            execute(numargs, args); 
+
+        free(linha); 
     }
-  return 0;
+
+    // Guarda histórico (opcional)
+    write_history(".soshell_history");
+
+    return 0;
 }
 
 int builtin (char **args)

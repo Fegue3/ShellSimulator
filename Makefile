@@ -9,7 +9,7 @@
 #
 CC=cc
 FLAGS=-c -Wall
-LIBS=-lm
+LIBS=-lm -lreadline
 OBS=main.o execute.o parse.o socp.o calc.o files.o display.o redirects.o threads.o fileutils.o
 
 #Alvo por defeito é o primeiro
@@ -48,4 +48,5 @@ soshell : $(OBS)
 clean limpar:
 	rm -f soshell *.o
 	rm -f *~
+	rm -f .soshell_history
 	echo "Remover: Ficheiros executáveis, objetos e temporários."
