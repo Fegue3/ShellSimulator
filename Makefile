@@ -48,5 +48,4 @@ soshell : $(OBS)
 clean limpar:
 	rm -f soshell *.o
 	rm -f *~
-	rm -f .soshell_history
 	echo "Remover: Ficheiros executáveis, objetos e temporários."
