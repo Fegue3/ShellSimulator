@@ -19,7 +19,7 @@ int dupandclose(int fd, int fdold, int numargs, char *args[]) {
 
 int redirects(int numargs, char *args[]) {
     // 1. STDERR: 2>
-    if (numargs >= 3 && strcmp(args[numargs - 2], "2>") == 0) {
+    if (numargs >= 3 && strcmp(args[numargs - 2], "ERROS") == 0) {
         int fd = creat(args[numargs - 1], FILE_MODE);
         numargs = dupandclose(fd, STDERR_FILENO, numargs, args);
     }
