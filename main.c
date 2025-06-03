@@ -259,7 +259,20 @@ int builtin (char **args)
       cmd_sols(args[1]); // args[1] pode ser NULL
       return 1;
   }
-    
+  if (strcmp(args[0], "history") == 0){
+      FILE *fp = fopen(".soshell_history", "r");
+      if (fp == NULL) {
+          perror("Erro ao abrir o histórico");
+          return 1;
+      }
+      char line[256];
+      printf("Histórico de comandos:\n");
+      while (fgets(line, sizeof(line), fp)) {
+          printf("%s", line);
+      }
+      fclose(fp);
+      return 1;
+  }
   /* IMPORTANTE : 
    Devolver 0 para indicar que não existe comando embutido e que
    será executado usando exec() na função execute.c
