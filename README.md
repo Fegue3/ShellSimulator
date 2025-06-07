@@ -1,87 +1,122 @@
-ShellSimulator
-ShellSimulator is a C-based command-line shell emulator designed to mimic the behaviour of Unix-like shells. It supports a variety of built-in commands, file operations, and redirection features, providing a comprehensive environment for executing and testing shell commands.
+# ShellSimulator
 
-Features
-Execution of built-in commands such as cd, ls, cp, and mv.
+**ShellSimulator** is a simple command-line shell implemented in C. It emulates the behavior of a traditional Unix shell with support for basic commands, file operations, I/O redirection, and a few custom-built features. It's useful for educational purposes, especially in Operating Systems and Systems Programming contexts.
 
-Support for input/output redirection using >, <, and >>.
+## Features
 
-Custom implementation of the socp command for file copying.
+* Execution of built-in commands (`cd`, `ls`, `cp`, `mv`, `exit`)
+* I/O redirection (`>`, `<`, `>>`)
+* Custom command: `socp` for secure file copying
+* Basic multithreading support
+* Command parsing and simple error handling
+* History tracking via `.soshell_history`
+* Testing via script `1.sh`
 
-Thread management capabilities.
+## Requirements
 
-Comprehensive testing suite to validate functionalities.
+* A Unix-like system (Linux, macOS, WSL)
+* GCC compiler
+* `make` utility
 
-Getting Started
-Prerequisites
-GCC compiler
+## Installation
 
-Make utility
+Clone the repository and build the shell:
 
-Unix-like operating system
-
-Installation
-Clone the repository:
-
-bash
-Copy
-Edit
+```bash
 git clone https://github.com/Fegue3/ShellSimulator.git
 cd ShellSimulator
-Compile the source code:
-
-bash
-Copy
-Edit
 make
-Usage
-After compilation, run the shell simulator using:
+```
 
-bash
-Copy
-Edit
-./soshell
-You will be presented with a prompt where you can enter supported commands.
+## Running the Shell
 
-Supported Commands
-cd [directory] - Change the current directory.
+After compilation, run the shell with:
 
-ls - List the contents of the current directory.
+```bash
+./shell
+```
 
-cp [source] [destination] - Copy files from source to destination.
+You will see a prompt where you can type supported commands.
 
-mv [source] [destination] - Move or rename files.
+## Built-in Commands
 
-socp [source] [destination] - Custom file copy implementation.
+| Command            | Description                         |
+| ------------------ | ----------------------------------- |
+| `cd [dir]`         | Change current directory            |
+| `ls`               | List files in the current directory |
+| `cp [src] [dst]`   | Copy file from `src` to `dst`       |
+| `mv [src] [dst]`   | Move or rename a file               |
+| `socp [src] [dst]` | Custom secure copy command          |
+| `exit`             | Exit the shell                      |
 
-exit - Exit the shell simulator.
+## Redirection Support
 
-Redirection
-The shell simulator supports the following redirection operators:
+The shell supports:
 
-> - Redirect standard output to a file.
+* Output redirection: `>` and `>>`
+* Input redirection: `<`
 
-< - Redirect standard input from a file.
+### Examples:
 
->> - Append standard output to a file.
+```bash
+ls > files.txt
+cat < files.txt
+echo "Done" >> log.txt
+```
 
-Example:
+## Custom Command: `socp`
 
-bash
-Copy
-Edit
-ls > output.txt
-Testing
-The repository includes a suite of tests to verify the functionality of various components.
+`socp` works similarly to `cp`, but it is implemented from scratch using system calls for learning purposes.
 
-Running Tests
-Execute the test script provided:
+```bash
+socp file1.txt copy1.txt
+```
 
-bash
-Copy
-Edit
+## Testing
+
+To run the test suite, use the provided shell script:
+
+```bash
 ./1.sh
-This script runs a series of predefined tests and outputs the results, helping ensure that all features work as expected.
+```
 
-Contributing
-Contributions are welcome! Please fork the repository and submit a pull request with your enhancements.
+This script executes a series of automated tests to validate functionality and ensure robustness.
+
+## File Structure
+
+```
+├── .soshell_history       # Command history log
+├── 1.sh                   # Test script
+├── calc.c                 # Calculator-related logic (if implemented)
+├── display.c              # Terminal output functions
+├── execute.c              # Command execution logic
+├── files.c                # File management helpers
+├── fileutils.c            # Additional file utilities
+├── in.1                   # Input test file (used by 1.sh)
+├── main.c                 # Entry point for the shell
+├── Makefile               # Build instructions
+├── parse.c                # Command parsing and tokenizer
+├── README.md              # Project documentation
+├── redirects.c            # I/O redirection handling
+├── shell.h                # Header file with declarations
+├── socp.c                 # Implementation of `socp`
+├── threads.c              # Thread support logic
+```
+
+## Future Work
+
+* Pipe support (`|`)
+* Background process handling (`&`)
+* Tab-completion and history navigation
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+## Authors
+
+* Fegue3 — [https://github.com/Fegue3](https://github.com/Fegue3)
+
+---
+
+For educational use only. Contributions are welcome!
